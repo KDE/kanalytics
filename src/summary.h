@@ -24,18 +24,21 @@
 #include <QJsonDocument>
 #include <QString>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
 
 namespace KAnalytics {
 
 /**
  * KAnalytics Summary
+ *
  */
-class Q_DECL_EXPORT Summary: public QObject
+class Q_DECL_EXPORT Summary
 {
-    Q_OBJECT
 public:
-    Summary(QObject *parent = 0);
+    /**
+    * A unique random UUID is created so that
+    * future data can be related to the same user.
+    */
+    Summary();
     virtual ~Summary();
 
     /**
@@ -46,33 +49,12 @@ public:
     /**
      * Gather basic overall analytics data.
      *
-     * First time this method is invoked, a unique random UUID is created so that
-     * future data can be related to the same user.
-     *
      * @return Analytics data formatted as JSON
      */
     QByteArray toJson() const;
 
-    /**
-      * Send the analytics data to a KDE server using the JSON format.
-      *
-      * Emits the signal exportFinished()
-      */
-    void exportData();
-
-Q_SIGNALS:
-    /**
-     * Emitted when the data has (not) been exported
-     * @param errorCode @p 0 in case no error ocurred
-     */
-    void exportFinished(QNetworkReply::NetworkError errorCode);
-
-private slots:
-    void replyFinished(QNetworkReply* reply);
-
 private:
     QString m_uuid;
-    QNetworkAccessManager *m_manager;
 };
 
 }

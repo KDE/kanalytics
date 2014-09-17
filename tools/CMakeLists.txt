@@ -2,10 +2,10 @@ include_directories(${CMAKE_SOURCE_DIR}/src/)
 link_directories(${CMAKE_BINARY_DIR}/src)
 
 add_executable(kanalytics-console main.cpp)
-#ecm_mark_nongui_executable(kanalytics-console)
 target_link_libraries(kanalytics-console
   Qt5::Core
   Qt5::Widgets # QApplication
+  Qt5::DBus
   KF5::Solid
   KF5::CoreAddons # KAboutData
   KF5::I18n # KLocalizedString

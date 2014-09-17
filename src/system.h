@@ -21,7 +21,6 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#include <QtGlobal>
 #include <QJsonObject>
 #include <QString>
 

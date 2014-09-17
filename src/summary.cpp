@@ -21,9 +21,8 @@
 #include <QJsonObject>
 #include <QUuid>
 #include <QDebug>
-#include <QNetworkRequest>
 
-#include <KConfig>
+#include <KSharedConfig>
 #include <KConfigGroup>
 
 #include "summary.h"
@@ -33,12 +32,10 @@
 
 using namespace KAnalytics;
 
-Summary::Summary(QObject * parent):
-    QObject(parent),
-    m_manager(new QNetworkAccessManager(this))
+Summary::Summary()
 {
-    KConfig cfg("kanalytics");
-    KConfigGroup grp(&cfg, "General");
+    KSharedConfig::Ptr cfg = KSharedConfig::openConfig("kanalytics");
+    KConfigGroup grp(cfg, "General");
     const bool hasUuid = grp.hasKey("uuid");
     if (hasUuid) {
         //qDebug() << "User has UUID already";
@@ -69,22 +66,4 @@ QByteArray Summary::toJson() const
     tmpObj.insert("KDE", KDE().toJson());
     doc.setObject(tmpObj);
     return doc.toJson();
-}
-
-void Summary::exportData()
-{
-    connect(m_manager, &QNetworkAccessManager::finished, this, &Summary::replyFinished);
-    const QByteArray data = toJson();
-    QNetworkRequest request(QUrl("http://developer.kde.org/~lukas/kanalytics/kanalytics.php")); // FIXME testing page
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
-    request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("KAnalytics/%1").arg(KANALYTICS_VERSION));
-    m_manager->post(request, data);
-}
-
-void Summary::replyFinished(QNetworkReply *reply)
-{
-    qDebug() << "Sending data finished: " << reply->error();
-    Q_EMIT exportFinished(reply->error());
-    reply->deleteLater();
 }

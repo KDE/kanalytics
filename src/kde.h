@@ -22,7 +22,6 @@
 #define KDE_H
 
 #include <QLocale>
-#include <QtGlobal>
 #include <QJsonObject>
 
 class QString;

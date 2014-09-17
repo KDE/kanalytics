@@ -77,7 +77,7 @@ public:
     int architecture() const;
 
     /**
-     * @return total RAM present in the system, in bytes
+     * @return total RAM present in the system, in bytes; -1 if unknown
      */
     qlonglong totalRam() const;
 
