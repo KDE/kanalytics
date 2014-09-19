@@ -1,6 +1,20 @@
 [Desktop Entry]
 Name=KDE Analytics Module
+Name[ca]=Mòdul per a les analítiques del KDE
+Name[hu]=KDE analitikai modul
+Name[nl]=Module KDE Analytics
+Name[pt]=Módulo Analítico do KDE
+Name[sv]=KDE-analysmodul
+Name[uk]=Модуль аналітики KDE
+Name[x-test]=xxKDE Analytics Modulexx
 Comment=Provides KDE system analytics
+Comment[ca]=Proporciona analítiques del sistema KDE
+Comment[hu]=Rendszer-analitikai modul a KDE-hez
+Comment[nl]=Biedt de KDE systeemanalyse
+Comment[pt]=Oferece alguns dados analíticos sobre o KDE
+Comment[sv]=Tillhandahåller KDE-systemanalyser
+Comment[uk]=Надає аналітику щодо системи KDE
+Comment[x-test]=xxProvides KDE system analyticsxx
 Type=Service
 X-KDE-ServiceTypes=KDEDModule
 X-KDE-ModuleType=Library
