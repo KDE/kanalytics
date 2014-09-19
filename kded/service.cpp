@@ -34,8 +34,7 @@
 #include <KMessageBox>
 #include <KLocalizedString>
 
-
-#define ONE_WEEK 7*24*60*60*1000 // 7 days * 24 hrs * 60 min * 60 sec * 1000 msec
+static const uint ONE_WEEK = 7*24*60*60*1000; // 7 days * 24 hrs * 60 min * 60 sec * 1000 msec
 
 K_PLUGIN_FACTORY(KAnalyticsServiceFactory, registerPlugin<KAnalyticsService>();)
 
@@ -55,6 +54,7 @@ void KAnalyticsService::init()
     m_manager = new QNetworkAccessManager(this);
     connect(m_manager, &QNetworkAccessManager::finished, this, &KAnalyticsService::replyFinished);
     m_timer = new QTimer(this);
+    m_timer->setTimerType(Qt::VeryCoarseTimer); // 1sec accuracy, enough for us
     connect(m_timer, &QTimer::timeout, this, &KAnalyticsService::exportData);
     m_cfg = KSharedConfig::openConfig("kanalytics");
 
@@ -70,8 +70,11 @@ void KAnalyticsService::init()
         if (!m_timestamp.isValid() || m_timestamp.daysTo(QDateTime::currentDateTime()) > 7) { // no export happened yet or more than one week ago, do it now
             //qDebug() << "EXPORTING NOW ";
             exportData();
+        } else { // just schedule the next sync
+            const int interval = qMin(ONE_WEEK, ONE_WEEK - QDateTime::currentDateTime().toTime_t()*1000 - m_timestamp.toTime_t()*1000);
+            //qDebug() << "Scheduling next sync in: " << interval;
+            m_timer->start(interval); // start the timer with ONE_WEEK period since the last sync, ONE_WEEK max
         }
-        m_timer->start(ONE_WEEK);
     } else if (!grp.hasKey("UserApproval")) { // new user, ask for approval
         //qDebug() << "new user, asking for approval";
         // FIXME improve this text, link to "real info" page
@@ -87,8 +90,7 @@ void KAnalyticsService::init()
             m_haveUserApproval = true;
             grp.writeEntry("UserApproval", true);
             grp.sync();
-            exportData(); // export data and start the timer
-            m_timer->start(ONE_WEEK);
+            exportData(); // export data
         } else {
             //qDebug() << "user disagrees";
             // FIXME perhaps we might as well disable this module completely?
@@ -131,7 +133,7 @@ void KAnalyticsService::exportData()
 
 void KAnalyticsService::replyFinished(QNetworkReply *reply)
 {
-    //qDebug() << "Sending data finished: " << reply->error();
+    //qDebug() << "Sending data finished: " << reply->error() << " with msg: " << reply->errorString();
     if (reply->error() == QNetworkReply::NoError) { // set and write timestamp and last seen Plasma version
         m_timestamp = QDateTime::currentDateTime();
         KConfigGroup grp(m_cfg, "Export");
@@ -140,6 +142,7 @@ void KAnalyticsService::replyFinished(QNetworkReply *reply)
         grp.writeEntry("LastSeenPlasmaVersion", k.plasmaVersion());
         grp.sync();
     }
+    m_timer->start(ONE_WEEK); // restart the timer with one week period
     Q_EMIT exportFinished(reply->error());
     reply->deleteLater();
 }
