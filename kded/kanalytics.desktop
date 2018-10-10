@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=KDE Analytics Module
 Name[ar]=وحدة «كدي» للتّحليل
-Name[ast]=Módulu d'analítiques de KDE
 Name[ca]=Mòdul per a les analítiques del KDE
 Name[ca@valencia]=Mòdul per a les analítiques del KDE
 Name[da]=KDE analytisk-modul
@@ -32,7 +31,6 @@ Name[zh_CN]=KDE 分析模块
 Name[zh_TW]=KDE 統計模組
 Comment=Provides KDE system analytics
 Comment[ar]=توفّر تحاليل لنظام «كدي»
-Comment[ast]=Forne analítiques del sistema KDE
 Comment[ca]=Proporciona analítiques del sistema KDE
 Comment[ca@valencia]=Proporciona analítiques del sistema KDE
 Comment[cs]=Poskytuje analýzu systému KDE
